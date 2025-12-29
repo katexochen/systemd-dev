@@ -81,12 +81,8 @@ Whether to upstream or using a different workaround is undecided so far.
 
 ### Patches in `mkosi`
 
-This depends on a few patches on [my own fork of mkosi](https://github.com/Ma27/mkosi/tree/systemd-hacking-on-nixos) that
-are planned to be upstreamed:
-
-* `config: make repository_key_fetch universal`: Make it possible to set `--repository_key_fetch=true` in any case.
-* `mkosi/run: inherit store paths from nix-shell into sandbox`: `mkosi` clears the `PATH` before invoking the sandbox to only contain `/usr/bin` & `/usr/sbin`. This patch keeps all entries in `$PATH` that begin with `/nix/store/` (which is already added to the sandbox upstream unconditionally).
-* `mkosi: remaining hacks`: Removes one more usage of `/bin/bash` and injects `LD_LIBRARY_PATH` into the sandbox because there's no global `/usr/lib` with `libseccomp.so` installed on NixOS.
+This depends on a few patches on [my own fork of mkosi](https://github.com/Ma27/mkosi/tree/systemd-hacking-on-nixos)
+with [a pending PR](https://github.com/systemd/mkosi/pull/4100).
 
 ### Vision
 
