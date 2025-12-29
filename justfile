@@ -66,6 +66,5 @@ build-mkosi:
 clean-full:
   sudo rm -rf mkosi systemd
 
-# TODO
-# ssh
-# reinstall
+reinstall-vm-pkg: build
+  {{call}} mkosi -R && {{call}} mkosi ssh -- dnf upgrade --disablerepo="*" --assumeyes "/work/build/*.rpm"
