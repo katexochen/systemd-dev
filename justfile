@@ -68,3 +68,12 @@ clean-full:
 
 reinstall-vm-pkg: build
   {{call}} mkosi -R && {{call}} mkosi ssh -- dnf upgrade --disablerepo="*" --assumeyes "/work/build/*.rpm"
+
+unittest:
+  {{call}} box -- meson test -C build --print-errorlogs -q
+
+list-tests:
+  {{call}} box -- meson introspect build --tests
+
+integration-test NAME *OPTS:
+  {{call}} box -- meson test -C build --setup=integration -v {{NAME}} {{OPTS}}

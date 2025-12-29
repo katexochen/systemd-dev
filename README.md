@@ -50,8 +50,24 @@ container like this:
 [nix-shell:~/systemd-dev]$ just boot
 ```
 
+Running unit-tests:
+
+```
+[nix-shell:~/systemd-dev]$ just unit-test
+```
+
+Please note that some of these tests are environment-sensitive and don't work yet, e.g. because `/var/tmp` as
+temporary directory is expected.
+
+A single integration test can be executed like this:
+
+```
+[nix-shell:~/systemd-dev]$ just integration-test TEST-01-BASIC
+```
+
 For further information on how to hack on `systemd`, please refer to their
-[hacking guide](https://systemd.io/HACKING/).
+[hacking guide](https://systemd.io/HACKING/) and the
+[guide on systemd's test-suite](https://github.com/systemd/systemd/blob/main/test/integration-tests/README.md).
 
 ## Notes
 
