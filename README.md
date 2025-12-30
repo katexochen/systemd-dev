@@ -2,8 +2,8 @@
 
 Useful scripts to manage a systemd-based dev environment on NixOS.
 
-This is essentially a [`just`-based](https://just.systems/man/en/) that invokes `mkosi`
-on a [branch that contains a few fixes to correctly run on NixOS](https://github.com/Ma27/mkosi/tree/systemd-hacking-on-nixos).
+This is essentially a [`just`-based](https://just.systems/man/en/) that invokes `mkosi` and has a few
+quality-of-life things on top.
 
 Right now this only supports distros that [`mkosi`](https://mkosi.systemd.io/), so this isn't fully
 NixOS-native (yet).
@@ -81,8 +81,7 @@ Whether to upstream or using a different workaround is undecided so far.
 
 ### Patches in `mkosi`
 
-This depends on a few patches on [my own fork of mkosi](https://github.com/Ma27/mkosi/tree/systemd-hacking-on-nixos)
-with [a pending PR](https://github.com/systemd/mkosi/pull/4100).
+All patches necessary to function were upstreamed 🎉
 
 ### Vision
 

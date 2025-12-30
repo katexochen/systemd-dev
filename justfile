@@ -1,12 +1,12 @@
 distribution := "fedora"
 tools_distribution := "fedora"
 
-base_args := "--distribution=" + distribution + " --tools-tree-distribution=" + tools_distribution + " --repository-key-fetch=true"
+base_args := "--distribution=" + distribution + " --tools-tree-distribution=" + tools_distribution
 mkosi := "python -m mkosi"
 git := "git"
 
-mkosi_repo := "git@github.com:ma27/mkosi"
-mkosi_branch := "systemd-hacking-on-nixos"
+mkosi_repo := "git@github.com:systemd/mkosi"
+mkosi_branch := "main"
 
 systemd_repo := "git@github.com:systemd/systemd"
 systemd_branch := "main"
