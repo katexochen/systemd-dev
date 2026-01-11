@@ -21,9 +21,6 @@ clone:
   fi
   if [ ! -d systemd ]; then
     {{git}} clone {{systemd_repo}} --branch {{systemd_branch}}
-    for f in mkosi.{clangd,clean,sync,images/build/mkosi.conf.d/centos-fedora/mkosi.prepare}; do
-      sed -i'' -e 's,/bin/bash,/usr/bin/env bash,' systemd/mkosi/"$f"
-    done
   fi
 
 [private]
