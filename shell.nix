@@ -37,7 +37,7 @@ mkShell {
 
     # make mkosi itself available by the Python interpreter. We invoke it via
     # `python -m mkosi`.
-    export PYTHONPATH="$(pwd)/mkosi:$PYTHONPATH"
+    export PYTHONPATH="''${MKOSI_SRC:-$(pwd)/mkosi}''${PYTHONPATH:+:$PYTHONPATH}"
 
     # Otherwise output from some build processes is hardly readable on
     # a light terminal.
@@ -53,5 +53,7 @@ mkShell {
     # We simply use `/tmp/nix-shell-<hash>` (without the `build-top`-part) to work around
     # that problem for now.
     export TMPDIR="$(realpath "$TMPDIR/../")"
+
+    export JUST_JUSTFILE=${toString ./justfile}
   '';
 }

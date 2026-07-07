@@ -2,58 +2,107 @@
 
 Useful scripts to manage a systemd-based dev environment on NixOS.
 
-This is essentially a [`just`-based](https://just.systems/man/en/) that invokes `mkosi` and has a few
+This is essentially a [`just`-based](https://just.systems/man/en/) wrapper that invokes `mkosi` and has a few
 quality-of-life things on top.
 
-Right now this only supports distros that [`mkosi`](https://mkosi.systemd.io/), so this isn't fully
+Right now this only supports distros that [`mkosi`](https://mkosi.systemd.io/) supports, so this isn't fully
 NixOS-native (yet).
+
+The tooling (this repo) is kept separate from the sources: `systemd` and `mkosi` are checked out elsewhere
+and pull the dev shell in via [`direnv`](https://direnv.net/). This keeps the source trees clean and lets you
+run several `systemd` worktrees in parallel, all sharing the same tools.
 
 ## Prerequisites
 
-For this to work properly, your host-system **must** use an overlay-based `/etc`, i.e.
-[`system.etc.overlay.enable = true;`](https://search.nixos.org/options?channel=25.11&show=system.etc.overlay.enable&query=etc.overlay).
+- Your host-system **must** use an overlay-based `/etc`, i.e.
+  [`system.etc.overlay.enable = true;`](https://search.nixos.org/options?channel=25.11&show=system.etc.overlay.enable&query=etc.overlay).
+- [`direnv`](https://direnv.net/), ideally with [`nix-direnv`](https://github.com/nix-community/nix-direnv).
+
+## Layout
+
+`systemd` and `mkosi` are checked out at the same level, next to this repo:
+
+```
+code/
+├── systemd-dev/      # this repo (tooling: shell.nix, justfile)
+├── systemd/          # systemd source
+└── mkosi/            # mkosi source
+```
+
+Either source may be a plain checkout or a worktree layout; the `mkosi` location is auto-detected
+(`systemd.envrc` picks the `main` worktree when the source is set up that way). An accepted worktree
+layout looks like this:
+
+```
+code/
+├── systemd-dev/      # this repo (tooling: shell.nix, justfile)
+├── systemd/
+│   ├── main/         # systemd source (worktree)
+│   └── <feature>/    # further worktrees
+└── mkosi/
+    └── main/         # mkosi source (worktree)
+```
+
+## Setup
+
+Check out the sources at the same level as this repo:
+
+```
+$ git -C .. clone https://github.com/systemd/systemd
+$ git -C .. clone https://github.com/systemd/mkosi
+```
+
+Link the tracked `systemd.envrc` into the `systemd` checkout as `.envrc`, then allow it:
+
+```
+$ ln -s ../systemd-dev/systemd.envrc ../systemd/.envrc
+$ direnv allow ../systemd
+```
+
+For a worktree layout the `.envrc` symlink lives in each worktree instead:
+
+```
+$ ln -s ../../systemd-dev/systemd.envrc ../systemd/main/.envrc
+$ direnv allow ../systemd/main
+```
+
+Use a worktree manager that copies the file when a new worktree is created.
+
+Entering the `systemd` directory now loads the dev shell (all tools and environment variables)
+automatically, and the `just` recipes operate on that checkout.
 
 ## Quick start
 
-Enter a `nix-shell` with all relevant tools and environment variables set:
-```
-$ nix-shell
-```
-
-Clone `mkosi` and `systemd` into this directory, compile sources and build a Fedora
-image:
+From the `systemd` checkout, compile the sources and build a Fedora image:
 
 ```
-[nix-shell:~/systemd-dev]$ just init-mkosi
+[systemd]$ just init-mkosi
 ```
 
 Boot the image in a VM:
 
 ```
-[nix-shell:~/systemd-dev]$ just vm
+[systemd]$ just vm
 ```
 
-This command leaves you in a shell of that VM. Further sessions can be
-opened by SSHing into the VM:
+This leaves you in a shell of that VM. Further sessions can be opened by SSHing into it:
 
 ```
-[nix-shell:~/systemd-dev]$ just mkosi ssh
+[systemd]$ just mkosi ssh
 ```
 
-Generally, it's possible to call the locally checked out `mkosi` with
-`just mkosi <ARGS>`.
+Generally, it's possible to call the locally checked out `mkosi` with `just mkosi <ARGS>`.
 
-Instead of booting a fully-fledged VM, it's also possible to boot an nspawn
-container like this:
+Instead of booting a fully-fledged VM, it's also possible to boot an nspawn container:
 
 ```
-[nix-shell:~/systemd-dev]$ just boot
+[systemd]$ just boot
 ```
 
 Running unit-tests:
 
 ```
-[nix-shell:~/systemd-dev]$ just unit-test
+[systemd]$ just unittest
 ```
 
 Please note that some of these tests are environment-sensitive and don't work yet, e.g. because `/var/tmp` as
@@ -62,7 +111,7 @@ temporary directory is expected.
 A single integration test can be executed like this:
 
 ```
-[nix-shell:~/systemd-dev]$ just integration-test TEST-01-BASIC
+[systemd]$ just integration-test TEST-01-BASIC
 ```
 
 For further information on how to hack on `systemd`, please refer to their
@@ -70,14 +119,6 @@ For further information on how to hack on `systemd`, please refer to their
 [guide on systemd's test-suite](https://github.com/systemd/systemd/blob/main/test/integration-tests/README.md).
 
 ## Notes
-
-### Changes to the `systemd` tree
-
-A bunch of scripts (e.g. `mkosi.sync`) are executed before a fully configured tools-tree exists.
-Hence, it relies on tools on the host-side to exist, including `/bin/bash`. For now,
-when we clone, the shebangs are replaced with `/usr/bin/env bash`.
-
-Whether to upstream or using a different workaround is undecided so far.
 
 ### Patches in `mkosi`
 
