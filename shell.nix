@@ -3,6 +3,10 @@ let
 in
 with import inputs.nixpkgs { };
 
+let
+  # systemd's external C dependencies, exposed so clangd can resolve their headers.
+  clangdDeps = systemd.buildInputs;
+in
 mkShell {
   packages = [
     # for mkosi itself
@@ -21,6 +25,10 @@ mkShell {
     # command runner for convenience purposes.
     just
   ];
+
+  nativeBuildInputs = [ pkg-config ];
+  buildInputs = clangdDeps;
+
   shellHook = ''
     # SOURCE_DATE_EPOCH=0 is set by nix-shell, however this gets
     # actively rejected by tools generating a secureboot keypair when
@@ -55,5 +63,14 @@ mkShell {
     export TMPDIR="$(realpath "$TMPDIR/../")"
 
     export JUST_JUSTFILE=${toString ./justfile}
+
+    # The compile database is generated inside the (Fedora) box and references
+    # /usr/include, which is absent on the host. Put the nix headers of systemd's
+    # dependencies on CPATH (clang honours it) so clangd resolves them.
+    export CPATH=${lib.makeSearchPathOutput "dev" "include" clangdDeps}$(
+      for _m in $(pkg-config --list-all 2>/dev/null | cut -d' ' -f1); do
+        pkg-config --cflags-only-I "$_m" 2>/dev/null
+      done | tr ' ' '\n' | sed -n 's/^-I/:/p' | sort -u | tr -d '\n'
+    )
   '';
 }
