@@ -1,7 +1,7 @@
 let
   inputs = import ./lon.nix;
 in
-with import inputs.nixpkgs {};
+with import inputs.nixpkgs { };
 
 mkShell {
   packages = [
@@ -26,6 +26,14 @@ mkShell {
     # actively rejected by tools generating a secureboot keypair when
     # building an OS image with a fresh systemd.
     unset SOURCE_DATE_EPOCH
+
+    # NixOS sets TZDIR=/etc/zoneinfo, which links into the nix store.
+    # 'mkosi box' leaks TZDIR into the box, but the symlink doesn't resolve there.
+    # systemd hard-codes /usr/share/zoneinfo, which exists in the box,
+    # but glibc resolves via TZDIR, fails, falls back to UTC, causing test failures.
+    unset TZDIR
+
+    export MANPAGER=less
 
     # make mkosi itself available by the Python interpreter. We invoke it via
     # `python -m mkosi`.
