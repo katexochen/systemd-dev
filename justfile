@@ -36,6 +36,10 @@ build:
 build-mkosi:
   {{call}} box -- meson compile -C build mkosi
 
+clangd:
+  test -d {{sd}}/build || { echo "run 'just init-mkosi' first" >&2; exit 1; }
+  {{call}} box -- env CC=clang CXX=clang++ meson setup --reconfigure build
+
 clean:
   rm -rf {{sd}}/build
 
