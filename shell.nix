@@ -21,6 +21,7 @@ mkShell {
     util-linux
     systemd
     clang-tools
+    lon
 
     # command runner for convenience purposes.
     just
