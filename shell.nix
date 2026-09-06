@@ -22,6 +22,8 @@ mkShell {
     systemd
     clang-tools
     lon
+    valgrind
+    libselinux
 
     # command runner for convenience purposes.
     just
