@@ -2,14 +2,12 @@
   "version": "1",
   "sources": {
     "nixpkgs": {
-      "type": "GitHub",
+      "type": "Tarball",
       "fetchType": "tarball",
-      "owner": "nixos",
-      "repo": "nixpkgs",
-      "branch": "nixos-25.11",
-      "revision": "9ef261221d1e72399f2036786498d78c38185c46",
-      "url": "https://github.com/nixos/nixpkgs/archive/9ef261221d1e72399f2036786498d78c38185c46.tar.gz",
-      "hash": "sha256-P6RVkrM9JLCW6xBjSwHfgTOQ1JwBUma5xe5LI8xAPC0="
+      "origin": "https://channels.nixos.org/nixos-unstable-small/nixexprs.tar.zst",
+      "revision": "e6025a0259c7e80f81b11effc15f65d95b708cba",
+      "url": "https://releases.nixos.org/nixos/unstable-small/nixos-26.11pre1080820.e6025a0259c7/nixexprs.tar.zst?rev=e6025a0259c7e80f81b11effc15f65d95b708cba&lastModified=1790573947",
+      "hash": "sha256-jEM5snk620AVrd9LX3k9ucA2tJkwaiV3TQSf2DGMzgw="
     }
   }
 }
