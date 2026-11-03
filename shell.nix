@@ -24,6 +24,7 @@ mkShell {
     lon
     valgrind
     libselinux
+    jq
 
     # command runner for convenience purposes.
     just

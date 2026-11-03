@@ -41,7 +41,7 @@ clangd:
   {{call}} box -- env CC=clang CXX=clang++ meson setup --reconfigure build
 
 clean:
-  rm -rf {{sd}}/build
+  sudo rm -rf {{sd}}/build {{sd}}/mkosi/mkosi.tools {{sd}}/mkosi/.mkosi-private
 
 reinstall-vm-pkg: build
   {{call}} mkosi -R && {{call}} mkosi ssh -- dnf upgrade --disablerepo="*" --assumeyes "/work/build/*.rpm"
